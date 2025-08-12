@@ -35,13 +35,13 @@ Through interactive surveys, automated scans, and educational content, the app p
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started and Demo
 
 ### 1. Prerequisites
 - **Node.js** (LTS version recommended)  
 - **Yarn** or **npm**  
 - **Expo Go** app installed on your mobile device  
-  ![Expo QR Code](assets/qrcode.png)
+  ![Expo QR Code](https://github.com/hurabono/check-check-security-app/blob/main/Screenshot%202025-08-11%20232811.png?raw=true)
 
 ---
 
