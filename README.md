@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+CheckCheck Security App
+CheckCheck is a mobile application built with React Native and Expo, designed to help users assess and improve their personal digital security awareness. Through interactive surveys, automated scans, and educational content, the app provides a comprehensive tool for enhancing digital safety.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Key Features
+🔐 Security Survey: An interactive questionnaire that evaluates a user's security knowledge and habits, providing a score and a risk assessment (Safe, Recommendation, Danger).
 
-## Get started
+📲 Automated Scan: A feature to initiate a simulated security scan of the device based on the user's survey results, helping to identify potential vulnerabilities.
 
-1. Install dependencies
+📚 Security Articles: A curated list of articles and tips on current security trends, such as phishing, password management, and safe browsing, to keep users informed.
 
-   ```bash
-   npm install
-   ```
+📍 Store Locator: A map-based feature allowing users to find nearby telecom stores, integrated with the Google Maps API.
 
-2. Start the app
+👤 User Authentication: Secure sign-up and sign-in functionality managed by Clerk.
 
-   ```bash
-   npx expo start
-   ```
+Tech Stack
+Framework: React Native with Expo
 
-In the output, you'll find options to open the app in a
+Authentication: Clerk
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Navigation: Expo Router
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Maps & Geolocation: Google Maps Platform (Maps SDK, Places API, Geocoding API)
 
-## Get a fresh project
+Styling: React Native StyleSheet
 
-When you're ready, run:
+Getting Started
+Prerequisites
+Node.js (LTS version)
 
-```bash
-npm run reset-project
-```
+Yarn or npm
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Expo Go app on your mobile device or an emulator
 
-## Learn more
+Installation & Setup
+Clone the repository:
 
-To learn more about developing your project with Expo, look at the following resources:
+git clone https://github.com/your-username/checkcheck-security-app.git
+cd checkcheck-security-app
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Install dependencies:
 
-## Join the community
+npm install
 
-Join our community of developers creating universal apps.
+or
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+yarn install
+
+Set up environment variables:
+Create a .env file in the root of the client directory and add your API keys. Remember to prefix them with EXPO_PUBLIC_ to make them accessible within the app.
+
+.env
+
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+EXPO_PUBLIC_MAPS_API_KEY="AIzaSy..."
+
+Run the application:
+
+npx expo start
+
+Scan the QR code with the Expo Go app on your device to launch the application.
