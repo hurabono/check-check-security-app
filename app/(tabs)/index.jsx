@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, RefreshControl, TouchableOpacity, Image } from "react-native";
-import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { homeStyles } from "../../assets/styles/home.styles";
 import { COLORS } from "../../constants/colors";
-import { Ionicons } from "@expo/vector-icons";
 import LogoutButton from '../components/LogoutButton';
 
 const HomeScreen = () => {
@@ -81,7 +81,15 @@ const HomeScreen = () => {
               />
               <Text style={homeStyles.menuCardText}>보안에 관한 이야기</Text>
             </TouchableOpacity>
-        </View>
+
+
+            <TouchableOpacity
+              style={homeStyles.menuCard}
+              onPress={() => router.push("/SmsAnalysis")} // 새 페이지 경로
+            >
+              <Text style={homeStyles.menuCardText}>📱 스미싱 분석</Text>
+            </TouchableOpacity>
+          </View>
       </ScrollView>
     </View>
   );

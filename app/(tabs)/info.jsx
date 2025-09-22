@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
 import { useAuth } from "@clerk/clerk-expo";
-import { View, Text, ScrollView, ActivityIndicator, Alert, StyleSheet, RefreshControl, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, Alert, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Info() {
   const { getToken, userId, isLoaded } = useAuth();
@@ -47,7 +47,37 @@ export default function Info() {
     [isLoaded, userId, getToken]
   );
 
+
+  
+
   const handleDelete = async (id) => {
+  if (Platform.OS === "web") {
+    const confirmed = window.confirm("이 진단 기록을 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("인증 토큰을 가져올 수 없습니다.");
+
+      const res = await fetch(
+        `https://check-check-api.onrender.com/api/diagnosis/${id}/${userId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "삭제 실패");
+      }
+
+      window.alert("진단 기록이 삭제되었습니다.");
+      setRecords((prev) => prev.filter((r) => String(r.id) !== String(id)));
+    } catch (err) {
+      window.alert(err.message || "삭제 중 오류가 발생했습니다.");
+    }
+  } else {
     Alert.alert("삭제 확인", "이 진단 기록을 삭제하시겠습니까?", [
       { text: "취소", style: "cancel" },
       {
@@ -72,14 +102,16 @@ export default function Info() {
             }
 
             Alert.alert("성공", "진단 기록이 삭제되었습니다.");
-            setRecords((prev) => prev.filter((r) => r.id !== id));
+            setRecords((prev) => prev.filter((r) => String(r.id) !== String(id)));
           } catch (err) {
             Alert.alert("오류", err.message || "삭제 중 오류가 발생했습니다.");
           }
         },
       },
     ]);
-  };
+  }
+};
+
 
   useFocusEffect(
     useCallback(() => {
