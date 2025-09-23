@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { Redirect, Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Redirect, Tabs } from "expo-router";
 import { COLORS } from "../../constants/colors";
 
 const TabsLayout = () => {
@@ -60,6 +60,20 @@ const TabsLayout = () => {
        />
     <Tabs.Screen
         name="scan"
+        options={{
+        href: null,
+      }}
+    />
+
+    <Tabs.Screen
+        name="SmsAnalysis"
+        options={{
+        href: null,
+      }}
+    />
+
+    <Tabs.Screen
+        name="emailAnalysis"
         options={{
         href: null,
       }}

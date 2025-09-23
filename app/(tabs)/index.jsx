@@ -85,10 +85,18 @@ const HomeScreen = () => {
 
             <TouchableOpacity
               style={homeStyles.menuCard}
-              onPress={() => router.push("/SmsAnalysis")} // 새 페이지 경로
+              onPress={() => router.push("/SmsAnalysis")} 
             >
               <Text style={homeStyles.menuCardText}>📱 스미싱 분석</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={homeStyles.menuCard}
+              onPress={() => router.push("/emailAnalysis")} 
+            >
+              <Text style={homeStyles.menuCardText}> 스팸 이메일 분석</Text>
+            </TouchableOpacity>
+
           </View>
       </ScrollView>
     </View>
