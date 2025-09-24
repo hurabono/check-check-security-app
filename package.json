@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "start:web": "cross-env EXPO_WEB=true expo start --web",
     "lint": "expo lint",
-    "web-build": "expo export:web"
+    "web-build": "expo export:web",
+     "build": "next build && next export"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.14.12",
