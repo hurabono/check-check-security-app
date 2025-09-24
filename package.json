@@ -11,7 +11,7 @@
     "start:web": "cross-env EXPO_WEB=true expo start --web",
     "lint": "expo lint",
     "web-build": "expo export:web",
-     "build": "next build && next export"
+    "build": "next build && next export"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.14.12",
@@ -41,8 +41,9 @@
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
+    "next": "^15.5.4",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react-dom": "^19.0.0",
     "react-native": "0.79.5",
     "react-native-device-info": "^14.0.4",
     "react-native-gesture-handler": "~2.24.0",
