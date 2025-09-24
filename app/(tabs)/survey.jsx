@@ -1,10 +1,7 @@
-import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from "react-native";
-import { useState } from "react";
 import { useRouter } from "expo-router";
-// useAuth는 현재 코드에서 직접 사용되지 않으므로, 필요 없다면 제거해도 됩니다.
-// import { useAuth } from "@clerk/clerk-expo";
+import { useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-// home.styles.js를 참고한 디자인 시스템
 const COLORS = {
   primary: '#6a1b9a',
   accent: '#e1bee7',
@@ -15,48 +12,48 @@ const COLORS = {
   borderColor: '#ddd',
 };
 
-// 6개의 새로운 보안 질문 목록
+
 const surveyQuestions = [
   {
     id: 'q1',
-    question: '비밀번호를 만들 때 가장 중요하다고 생각하는 것은 무엇인가요?',
-    options: ['길고 복잡하게 만들기', '기억하기 쉽게 만들기', '자주 사용하는 단어 포함하기'],
+    question: 'What do you think is the most important thing when creating passwords?',
+    options: ['Make it long and complicated', 'Make it easier to remember', 'Include frequently used words.'],
   },
   {
     id: 'q2',
-    question: '모르는 사람에게 온 이메일의 링크를 클릭하는 것에 대해 어떻게 생각하시나요?',
-    options: ['필요하면 클릭한다', '절대 클릭하면 안 된다', '보낸 사람을 확인 후 결정한다'],
+    question: 'What do you think about clicking on a link in an email to someone you dont know?',
+    options: ['Click if necessary', 'Never click', 'Check the sender and decide'],
   },
   {
     id: 'q3',
-    question: '카페와 같은 공용 와이파이(Public Wi-Fi) 사용 시, 금융 거래를 하는 것은 안전할까요?',
-    options: ['급하면 괜찮다', '안전하지 않으므로 피해야 한다', '비밀번호만 안 쓰면 괜찮다'],
+    question: 'When using public Wi-Fi such as cafes, is it safe to make financial transactions?',
+    options: ['Its okay if youre in a hurry', 'Its not safe, so you have to avoid it', 'Its okay as long as you dont use the password'],
   },
-  {
+ {
     id: 'q4',
-    question: "은행에서 보낸 '계좌가 잠겼습니다'라는 내용의 문자를 받았다면 어떻게 해야 할까요?",
-    options: ['문자의 링크를 클릭해 확인한다', '은행 공식 앱이나 웹사이트로 직접 확인한다', '답장을 보내 내 정보가 맞는지 묻는다'],
+    question: "What should I do if I got a text from the bank saying 'account is locked'?",
+    options: ['Click the link in the text to check it', 'Check it directly with the banks official app or website', 'Send them a reply and ask if my information is correct.'],
   },
   {
     id: 'q5',
-    question: '스마트폰이나 컴퓨터의 소프트웨어 업데이트 알림이 뜨면 어떻게 하는 것이 가장 안전한가요?',
-    options: ["'나중에 하기'를 누른다", '즉시 업데이트를 설치한다', '업데이트는 불필요하므로 무시한다'],
+    question: 'What is the safest way to do when you get a software update notification on your smartphone or computer?',
+    options: ["Press 'Do it later'", 'Install updates immediately', 'Ignore updates because they are unnecessary'],
   },
   {
     id: 'q6',
-    text: '로그인 시 아이디와 비밀번호 외에 추가 인증(2FA)을 요구하는 기능에 대한 설명으로 가장 올바른 것은 무엇인가요?',
-    options: ['불편하므로 사용하지 않는 것이 좋다', '계정 보안을 크게 강화하는 필수 기능이다', '해커에게는 아무 소용 없는 기능이다'],
+    text: 'What is the most correct description of a feature that requires additional authentication (2FA) in addition to ID and password when logging in?',
+    options: ['Its uncomfortable, so its better not to use it', 'Its an essential function that greatly enhances account security', 'Its a function thats useless to hackers.'],
   },
 ];
 
-// 새로운 질문에 대한 점수 매핑 (정답: 2점, 오답: 0점)
+
 const scoreMapping = {
-  '길고 복잡하게 만들기': 2,
-  '보낸 사람을 확인 후 결정한다': 2,
-  '안전하지 않으므로 피해야 한다': 2,
-  '은행 공식 앱이나 웹사이트로 직접 확인한다': 2,
-  '즉시 업데이트를 설치한다': 2,
-  '계정 보안을 크게 강화하는 필수 기능이다': 2,
+  'Make it long and complicated': 2,
+  'Check the sender and decide': 2,
+  'Its not safe, so you have to avoid it': 2,
+  'Check it directly with the banks official app or website': 2,
+  'Install updates immediately': 2,
+  'Its an essential function that greatly enhances account security': 2,
 };
 
 const SurveyScreen = () => {
@@ -74,21 +71,19 @@ const SurveyScreen = () => {
     let score = 0;
     for (const question of surveyQuestions) {
       const answer = answers[question.id];
-      // scoreMapping에 있는 정답이면 2점, 없으면 0점을 더합니다.
       score += scoreMapping[answer] || 0;
     }
 
     setTotalScore(score);
 
-    // 총점 12점 만점 기준
-    if (score >= 10) return "안전";       // 5문제 이상 정답
-    if (score >= 6) return "보안 권장";   // 3~4문제 정답
-    return "위험";                       // 0~2문제 정답
+    if (score >= 10) return "safe";
+    if (score >= 6) return "Security recommended"; 
+    return "Dangers";                 
   };
 
   const handleSubmit = () => {
     if (Object.keys(answers).length < surveyQuestions.length) {
-      Alert.alert("설문 미완료", "모든 문항에 응답해주세요.");
+      Alert.alert("Questionnaire not completed", "Please answer all the questions.");
       return;
     }
     const surveyResult = calculateResult();
@@ -117,9 +112,8 @@ const SurveyScreen = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       {!submitted ? (
-        // --- 설문조사 진행 화면 ---
         <>
-          <Text style={styles.title}>기본 보안 인식 설문조사</Text>
+          <Text style={styles.title}>Basic Security Awareness Survey</Text>
           {surveyQuestions.map((q) => (
             <View key={q.id} style={styles.questionContainer}>
               <Text style={styles.questionText}>{q.question || q.text}</Text>
@@ -143,26 +137,26 @@ const SurveyScreen = () => {
             </View>
           ))}
           <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>제출하고 결과 보기</Text>
+            <Text style={styles.submitButtonText}>Submit and view results</Text>
           </TouchableOpacity>
         </>
       ) : (
         // --- 설문조사 결과 화면 ---
         <View style={styles.resultContainer}>
-          <Text style={styles.resultTitle}>설문 결과: {result}</Text>
-          <Text style={styles.resultScore}>보안 점수: {totalScore} / 12</Text>
+          <Text style={styles.resultTitle}>Results of the survey: {result}</Text>
+          <Text style={styles.resultScore}>Security Score: {totalScore} / 12</Text>
           <Text style={styles.resultDescription}>
-            {result === "안전"
-              ? "훌륭합니다! 기본적인 보안 수칙을 잘 지키고 계십니다."
-              : result === "보안 권장"
-              ? "좋습니다. 하지만 몇 가지 습관을 개선하면 더욱 안전해질 수 있습니다."
-              : "주의가 필요합니다. 계정 보안을 위해 즉각적인 개선이 필요합니다."}
+            {result === "Safe"
+              ? "Excellent! You are following the basic security rules well."
+              : result === "Security recommended"
+              ? "That's great, but if you improve some habits, you can be safer."
+              : "I need attention, I need immediate improvement for account security."}
           </Text>
           <TouchableOpacity onPress={handleStartScan} style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>자동 스캔 검사 시작하기</Text>
+            <Text style={styles.submitButtonText}>Starting an automatic scan</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleRestartSurvey} style={styles.restartButton}>
-            <Text style={styles.restartButtonText}>처음부터 다시하기</Text>
+            <Text style={styles.restartButtonText}>Do it all over again</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -170,7 +164,7 @@ const SurveyScreen = () => {
   );
 };
 
-// home.styles.js를 참고하여 개선된 스타일
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -237,7 +231,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  // 결과 화면 스타일
   resultContainer: {
     flex: 1,
     alignItems: 'center',
@@ -251,6 +244,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     marginBottom: 20,
     marginTop: 50,
+    textAlign:"center"
   },
   resultScore: {
     fontSize: 20,
@@ -265,7 +259,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   restartButton: {
-    backgroundColor: '#aaa', // '다시하기'는 다른 색상으로
+    backgroundColor: '#aaa', 
     marginHorizontal: 15,
     marginTop: 10,
     padding: 16,

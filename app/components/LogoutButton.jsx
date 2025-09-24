@@ -1,9 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, Alert, Text } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
-import { COLORS } from "../../constants/colors";
+import { Alert, Text, TouchableOpacity } from 'react-native';
 import { homeStyles } from "../../assets/styles/home.styles";
+import { COLORS } from "../../constants/colors";
 
 export default function LogoutButton() {
   const { signOut } = useAuth();
@@ -22,6 +21,6 @@ export default function LogoutButton() {
   };
 
   return <TouchableOpacity title="로그아웃" onPress={handleLogout} style={homeStyles.signoutButton}>
-    <Text style={{ color: COLORS.white, textAlign: 'center', fontSize: 16 }}>로그아웃</Text>
+    <Text style={{ color: COLORS.white, textAlign: 'center', fontSize: 14 }}>Logout</Text>
   </TouchableOpacity>;
 }

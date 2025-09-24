@@ -6,9 +6,9 @@ import { ActivityIndicator, Alert, Platform, RefreshControl, ScrollView, StyleSh
 export default function Info() {
   const { getToken, userId, isLoaded } = useAuth();
   const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true); // 첫 진입 로딩
+  const [loading, setLoading] = useState(true); 
   const [refreshing, setRefreshing] = useState(false);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false); // 첫 로딩 여부 추적
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false); 
 
   const fetchRecords = useCallback(
     async (showLoading = false) => {
@@ -21,7 +21,7 @@ export default function Info() {
 
       try {
         const token = await getToken();
-        if (!token) throw new Error("인증 토큰을 가져올 수 없습니다.");
+        if (!token) throw new Error("Unable to get authentication token.");
 
         const response = await fetch(
           `https://check-check-api.onrender.com/api/diagnosis/${userId}`,
@@ -30,18 +30,18 @@ export default function Info() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "데이터 불러오기 실패");
+          throw new Error(errorData.error || "Failed to import data");
         }
 
         const data = await response.json();
         setRecords(data.results || []);
       } catch (error) {
-        Alert.alert("오류", error.message || "데이터를 불러오는 중 오류가 발생했습니다.");
+        Alert.alert("Error", error.message || "An error occurred while retrieving data.");
         setRecords([]);
       } finally {
         setLoading(false);
         setRefreshing(false);
-        setHasLoadedOnce(true); // 한 번이라도 로드 끝나면 true
+        setHasLoadedOnce(true);
       }
     },
     [isLoaded, userId, getToken]
@@ -52,12 +52,12 @@ export default function Info() {
 
   const handleDelete = async (id) => {
   if (Platform.OS === "web") {
-    const confirmed = window.confirm("이 진단 기록을 삭제하시겠습니까?");
+    const confirmed = window.confirm("Are you sure you want to delete this diagnostic history?");
     if (!confirmed) return;
 
     try {
       const token = await getToken();
-      if (!token) throw new Error("인증 토큰을 가져올 수 없습니다.");
+      if (!token) throw new Error("Unable to get authentication token.");
 
       const res = await fetch(
         `https://check-check-api.onrender.com/api/diagnosis/${id}/${userId}`,
@@ -69,24 +69,24 @@ export default function Info() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "삭제 실패");
+        throw new Error(errorData.error || "Failed to delete");
       }
 
-      window.alert("진단 기록이 삭제되었습니다.");
+      window.alert("The diagnostic history has been deleted.");
       setRecords((prev) => prev.filter((r) => String(r.id) !== String(id)));
     } catch (err) {
-      window.alert(err.message || "삭제 중 오류가 발생했습니다.");
+      window.alert(err.message || "An error occurred while deleting.");
     }
   } else {
-    Alert.alert("삭제 확인", "이 진단 기록을 삭제하시겠습니까?", [
-      { text: "취소", style: "cancel" },
+    Alert.alert("Confirm deletion", "Are you sure you want to delete this diagnostic record?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "삭제",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           try {
             const token = await getToken();
-            if (!token) throw new Error("인증 토큰을 가져올 수 없습니다.");
+            if (!token) throw new Error("Unable to get authentication token.");
 
             const res = await fetch(
               `https://check-check-api.onrender.com/api/diagnosis/${id}/${userId}`,
@@ -98,13 +98,13 @@ export default function Info() {
 
             if (!res.ok) {
               const errorData = await res.json();
-              throw new Error(errorData.error || "삭제 실패");
+              throw new Error(errorData.error || "Failed to delete");
             }
 
-            Alert.alert("성공", "진단 기록이 삭제되었습니다.");
+            Alert.alert("Success", "The diagnostic history has been deleted.");
             setRecords((prev) => prev.filter((r) => String(r.id) !== String(id)));
           } catch (err) {
-            Alert.alert("오류", err.message || "삭제 중 오류가 발생했습니다.");
+            Alert.alert("Error", err.message || "An error occurred while deleting.");
           }
         },
       },
@@ -116,10 +116,8 @@ export default function Info() {
   useFocusEffect(
     useCallback(() => {
       if (!hasLoadedOnce) {
-        // 첫 진입 → 로딩 켜고 불러오기
         fetchRecords(true);
       } else {
-        // 이후 진입 → 로딩 없이 불러오기
         fetchRecords(false);
       }
     }, [fetchRecords, hasLoadedOnce])
@@ -130,12 +128,12 @@ export default function Info() {
     fetchRecords(false);
   };
 
-  // 첫 진입 시 로딩 화면
+
   if (loading && !hasLoadedOnce) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="purple" />
-        <Text style={{ marginTop: 10, color: "purple" }}>진단 기록을 불러오는 중...</Text>
+        <Text style={{ marginTop: 10, color: "purple" }}>Getting diagnostic records...</Text>
       </View>
     );
   }
@@ -147,11 +145,11 @@ export default function Info() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="purple" />
       }
     >
-      <Text style={styles.title} >진단 기록</Text>
+      <Text style={styles.title} >Diagnostic Record</Text>
       {records.length === 0 ? (
         <View style={styles.centerMessage}>
-          <Text style={styles.purpleText}>저장된 진단 기록이 없습니다.</Text>
-          <Text style={styles.subText}>홈 탭에서 자동 스캔 검사를 실행하고 결과를 저장해 보세요.</Text>
+          <Text style={styles.purpleText}>No saved diagnostic history.</Text>
+          <Text style={styles.subText}>From the Home tab, run an automatic scan scan and save the results.</Text>
         </View>
       ) : (
         records.map((record) => (
@@ -163,14 +161,14 @@ export default function Info() {
               <Text style={styles.deleteButtonText}>×</Text>
             </TouchableOpacity>
 
-            <Text style={styles.purpleText}>📱 기기 이름: {record.deviceName || '정보 없음'}</Text>
-            <Text style={styles.purpleText}>🖥 OS 버전: {record.osVersion || '정보 없음'}</Text>
-            <Text style={styles.purpleText}>🔒 보안 잠금: {record.isSecureDevice ? "설정됨" : "미설정"}</Text>
-            <Text style={styles.purpleText}>📵 탈옥/루팅: {record.isJailbroken ? "감지됨" : "정상"}</Text>
-            <Text style={styles.purpleText}>🌐 IP 주소: {record.ipAddress || '정보 없음'}</Text>
-            <Text style={styles.purpleText}>📊 설문 결과: {record.surveyResult || 'N/A'}</Text>
-            <Text style={styles.purpleText}>💯 설문 점수: {record.surveyScore !== null ? record.surveyScore : 'N/A'}</Text>
-            <Text style={styles.dateText}>스캔 시각: {new Date(record.scannedAt).toLocaleString('ko-KR')}</Text>
+            <Text style={styles.purpleText}>📱 Device: {record.deviceName || 'No information'}</Text>
+            <Text style={styles.purpleText}>🖥 OS Version: {record.osVersion || 'No information'}</Text>
+            <Text style={styles.purpleText}>🔒 PIN: {record.isSecureDevice ? "Set" : "No Setting"}</Text>
+            <Text style={styles.purpleText}>📵 Jailbreak/routing: {record.isJailbroken ? "Detected" : "Normal"}</Text>
+            <Text style={styles.purpleText}>🌐 IP address: {record.ipAddress || 'No information'}</Text>
+            <Text style={styles.purpleText}>📊 Survey Result: {record.surveyResult || 'N/A'}</Text>
+            <Text style={styles.purpleText}>💯 Survey Score: {record.surveyScore !== null ? record.surveyScore : 'N/A'}</Text>
+            <Text style={styles.dateText}>Scan Time: {new Date(record.scannedAt).toLocaleString('ko-KR')}</Text>
           </View>
         ))
       )}
@@ -180,7 +178,7 @@ export default function Info() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 20, paddingTop: 20, backgroundColor: '#f4f0f8' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#4b0082', marginBottom: 20, marginTop:50 },
+  title: { textAlign:"center", fontSize: 28, fontWeight: 'bold', color: '#4b0082', marginBottom: 20, marginTop:50 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   centerMessage: { marginTop: 50, alignItems: "center" },
   recordBox: {

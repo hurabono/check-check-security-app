@@ -33,21 +33,21 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: "홈",
+          title: "HOME",
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="info"
         options={{
-          title: "진단기록",
+          title: "RECORD",
           tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: "통신사",
+          title: "CARRIER",
           tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color} />,
         }}
       />

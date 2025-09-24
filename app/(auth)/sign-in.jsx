@@ -1,19 +1,19 @@
 import { useSignIn } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  View,
-  Text,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-import { Image, ImageBackground } from "expo-image";
+import { Image } from "expo-image";
 
 import { authStyles } from "../../assets/styles/auth.styles";
 import { COLORS } from "../../constants/colors";
@@ -30,7 +30,7 @@ const SignInScreen = () => {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("오류", "모든 필드를 입력해주세요");
+      Alert.alert("Error", "please enter email or password");
       return;
     }
 
@@ -47,11 +47,11 @@ const SignInScreen = () => {
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
       } else {
-        Alert.alert("오류", "로그인 실패, 다시 시도해주세요");
+        Alert.alert("error", "login failed, Please try again");
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
-      Alert.alert("오류", err.errors?.[0]?.message || "로그인 실패");
+      Alert.alert("error", err.errors?.[0]?.message || "login failed");
       console.error(JSON.stringify(err, null, 2));
     } finally {
       setLoading(false);
@@ -78,7 +78,7 @@ const SignInScreen = () => {
           </View>
 
 
-          <Text style={authStyles.title}>환영합니다! 로그인해주세요!</Text>
+          <Text style={authStyles.title}>WELCOME, PLEASE LOGIN!</Text>
 
           {/* FORM CONTAINER */}
           <View style={authStyles.formContainer}>
@@ -86,7 +86,7 @@ const SignInScreen = () => {
             <View style={authStyles.inputContainer}>
               <TextInput
                 style={authStyles.textInput}
-                placeholder="이메일"
+                placeholder="EMAIL"
                 placeholderTextColor={COLORS.textLight}
                 value={email}
                 onChangeText={setEmail}
@@ -99,7 +99,7 @@ const SignInScreen = () => {
             <View style={authStyles.inputContainer}>
               <TextInput
                 style={authStyles.textInput}
-                placeholder="비밀번호"
+                placeholder="PASSWORD"
                 placeholderTextColor={COLORS.textLight}
                 value={password}
                 onChangeText={setPassword}
@@ -124,7 +124,7 @@ const SignInScreen = () => {
               disabled={loading}
               activeOpacity={0.8}
             >
-              <Text style={authStyles.buttonText}>{loading ? "로그인중..." : "로그인"}</Text>
+              <Text style={authStyles.buttonText}>{loading ? "LOGGING..." : "LOGIN"}</Text>
             </TouchableOpacity>
 
             {/* Sign Up Link */}
@@ -133,7 +133,7 @@ const SignInScreen = () => {
               onPress={() => router.push("/(auth)/sign-up")}
             >
               <Text style={authStyles.linkText}>
-                처음이신가요? <Text style={authStyles.link}>회원가입하기</Text>
+                WE HAVE SEEN FIRST TIME? <Text style={authStyles.link}>SIGN UP</Text>
               </Text>
             </TouchableOpacity>
           </View>

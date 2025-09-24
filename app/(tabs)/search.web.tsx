@@ -1,21 +1,28 @@
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
-import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
+// 환경변수 이름/사용 방식은 그대로 유지
 const Maps_API_KEY: string = process.env.EXPO_PUBLIC_MAPS_API_KEY || '';
 
-const GWANGHWAMUN_COORDS = { lat: 37.5759, lng: 126.977 };
-const TELECOM_COMPANIES = ['SKT', 'KT', 'LG U+'];
+// === 타입 & 상수 (이름 유지) ===
+type LatLng = { latitude: number; longitude: number };
+
+// 변수명은 그대로 두고, 값만 토론토 다운타운으로 교체
+const GWANGHWAMUN_COORDS = { lat: 43.6532, lng: -79.3832 };
+
+// 기존 로직(대문자 비교) 유지를 위해 대문자로 설정
+const TELECOM_COMPANIES = ['ROGERS', 'BELL', 'TELUS'];
+
 const PURPLE_THEME = {
   primary: '#6a1b9a',
   secondary: '#ab47bc',
@@ -73,7 +80,7 @@ const styles = StyleSheet.create({
   myLocationButtonText: { color: PURPLE_THEME.white, fontWeight: 'bold' },
 });
 
-type LatLng = { latitude: number; longitude: number };
+
 
 const MapWithLogic: React.FC<{
   initialRegion: any;
@@ -86,71 +93,71 @@ const MapWithLogic: React.FC<{
   const map = useMap();
   const debounceTimer = useRef<any>(null);
 
-  // ✅ Places API v1 기반 매장 검색 (새로운 API)
+  // Places v1 검색 (로직 동일)
+  const fetchStores = async (region: LatLng, keywords: string[]) => {
+    const allResults: any[] = [];
 
-  const fetchStores = async (region: any, keywords: string[]) => {
-  const allResults: any[] = [];
-
-  for (const keyword of keywords) {
-    try {
-      const response = await fetch(
-        `https://places.googleapis.com/v1/places:searchText`,
-        {
-          method: "POST",
+    for (const keyword of keywords) {
+      try {
+        const response = await fetch(`https://places.googleapis.com/v1/places:searchText`, {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": process.env.EXPO_PUBLIC_MAPS_API_KEY || "",
-            "X-Goog-FieldMask": "places.id,places.displayName,places.location,places.formattedAddress"
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': Maps_API_KEY,
+            'X-Goog-FieldMask':
+              'places.id,places.displayName,places.location,places.formattedAddress',
           },
           body: JSON.stringify({
-            textQuery: keyword,
+            textQuery: keyword, 
             locationBias: {
               circle: {
                 center: { latitude: region.latitude, longitude: region.longitude },
-                radius: 5000
-              }
-            }
-          })
+                radius: 5000,
+              },
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          console.error('Place API search error: ', response.status, errText);
+          continue;
         }
-      );
 
-      const data = await response.json();
-      if (data.places) {
-        allResults.push(...data.places);
+        const data = await response.json();
+        if (data?.places?.length) {
+          allResults.push(...data.places);
+        }
+      } catch (err) {
+        console.error('Place API search error:', err);
       }
-    } catch (err) {
-      console.error("Place API 검색 에러:", err);
     }
-  }
 
-  // ✅ 중복 제거
-  const seen = new Set<string>();
-  const uniqueStores = allResults.filter((store: any) => {
-    if (!store.id || seen.has(store.id)) return false;
-    seen.add(store.id);
-    return true;
-  });
+    // 중복 제거
+    const seen = new Set<string>();
+    const uniqueStores = allResults.filter((store: any) => {
+      if (!store.id || seen.has(store.id)) return false;
+      seen.add(store.id);
+      return true;
+    });
 
-  setStores(uniqueStores);
-};
+    setStores(uniqueStores);
+  };
 
-
-
-
-  // ✅ 지도 idle 이벤트
+  // 지도 idle 이벤트 (로직 동일)
   const handleWebMapIdle = () => {
     if (!map) return;
     const center = map.getCenter();
     if (!center) return;
-    const newRegion = { latitude: center.lat(), longitude: center.lng() };
+    const newRegion: LatLng = { latitude: center.lat(), longitude: center.lng() };
     clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => {
       fetchStores(newRegion, TELECOM_COMPANIES);
     }, 800);
   };
 
-  // ✅ 검색
-  const handleSearch = async () => {
+  // 검색 (로직 동일: 통신사면 내 위치 기준, 아니면 지오코딩)
+  const handleSearch = () => {
     const query = searchQuery.trim();
     if (!query) return;
     const upperQuery = query.toUpperCase();
@@ -158,7 +165,7 @@ const MapWithLogic: React.FC<{
 
     if (isTelecomSearch) {
       if (!userCurrentLocation.current) {
-        Alert.alert('위치 정보 없음', '현재 위치를 찾을 수 없습니다.');
+        Alert.alert('No Location Information', 'The location could not be found..');
         return;
       }
       map?.panTo({
@@ -167,42 +174,34 @@ const MapWithLogic: React.FC<{
       });
       fetchStores(userCurrentLocation.current, [upperQuery]);
     } else {
-      // geocoding은 필요할 때만 사용
+      // geocoding은 필요할 때만 사용 (로직 동일)
+      // @ts-ignore 구글 맵스 전역
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ address: query }, (results, status) => {
         if (status === 'OK' && results && results[0]) {
           const location = results[0].geometry.location;
-          const newRegion = { latitude: location.lat(), longitude: location.lng() };
+          const newRegion: LatLng = { latitude: location.lat(), longitude: location.lng() };
           map?.panTo({ lat: newRegion.latitude, lng: newRegion.longitude });
           fetchStores(newRegion, TELECOM_COMPANIES);
         } else {
-          Alert.alert('검색 실패', '해당 위치를 찾을 수 없습니다.');
+          Alert.alert('Search failed', 'The location could not be found..');
         }
       });
     }
   };
 
-  // ✅ 내 위치 버튼
-  const goToMyLocation = async () => {
-  try {
+  // 내 위치 버튼 (로직 동일)
+  const goToMyLocation = () => {
     if (!userCurrentLocation.current) {
-      Alert.alert('위치 정보 없음', '현재 위치를 먼저 가져와야 합니다.');
+      Alert.alert('No Location Information', 'You need to get your current location first.');
       return;
     }
-
-    console.log("내 위치 이동:", userCurrentLocation.current);
-
     map?.panTo({
       lat: userCurrentLocation.current.latitude,
       lng: userCurrentLocation.current.longitude,
     });
-
     fetchStores(userCurrentLocation.current, TELECOM_COMPANIES);
-  } catch (error) {
-    Alert.alert('오류', '현재 위치로 이동할 수 없습니다.');
-    console.error("goToMyLocation 오류:", error);
-  }
-};
+  };
 
   return (
     <>
@@ -210,20 +209,23 @@ const MapWithLogic: React.FC<{
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.input}
-          placeholder="지역 또는 통신사 검색"
+          placeholder="Search for a region or carrier"
           value={searchQuery}
           onChangeText={setSearchQuery}
           onSubmitEditing={handleSearch}
           returnKeyType="search"
         />
         <TouchableOpacity onPress={handleSearch} style={{ padding: 8 }}>
-          <Text style={{ color: PURPLE_THEME.primary, fontSize: 16 }}>검색</Text>
+          <Text style={{ color: PURPLE_THEME.primary, fontSize: 16 }}>Search</Text>
         </TouchableOpacity>
       </View>
 
       {/* 지도 */}
       <Map
-        defaultCenter={{ lat: initialRegion.latitude, lng: initialRegion.longitude }}
+        defaultCenter={{
+          lat: initialRegion.latitude,
+          lng: initialRegion.longitude,
+        }}
         defaultZoom={16}
         gestureHandling="greedy"
         disableDefaultUI={true}
@@ -236,7 +238,7 @@ const MapWithLogic: React.FC<{
               lat: store.location.latitude,
               lng: store.location.longitude,
             }}
-            title={store.displayName?.text || '상호명 없음'}
+            title={store.displayName?.text || 'No display name'}
           />
         ))}
       </Map>
@@ -256,27 +258,97 @@ const SearchWeb: React.FC = () => {
 
   const userCurrentLocation = useRef<LatLng | null>(null);
 
+  const toLatLng = (p: { lat: number; lng: number }): LatLng => ({
+    latitude: p.lat,
+    longitude: p.lng,
+  });
+
+  // Google 지오로케이트 API 폴백 (WiFi/IP 기반 근사 좌표)
+  const googleGeolocate = async (): Promise<LatLng | null> => {
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${Maps_API_KEY}`,
+        { method: 'POST' }
+      );
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data?.location?.lat && data?.location?.lng) {
+        return { latitude: data.location.lat, longitude: data.location.lng };
+      }
+    } catch (e) {
+      console.log('Google Geolocation API 실패', e);
+    }
+    return null;
+    };
+
+  // 캐나다 여부 판별
+  const isInCanada = async (coords: LatLng): Promise<boolean> => {
+    try {
+      const resp = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${Maps_API_KEY}`
+      );
+      if (resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data?.results)) {
+          const hit = data.results.some((r: any) =>
+            String(r.formatted_address || '').includes('Canada')
+          );
+          if (hit) return true;
+        }
+      }
+    } catch (e) {
+      console.log('Geocoding failed, using boundary box fallback', e);
+    }
+
+    const { latitude, longitude } = coords;
+    return latitude >= 41 && latitude <= 83 && longitude >= -141 && longitude <= -52;
+  };
+
   useEffect(() => {
     const initialize = async () => {
-      let coords: LatLng = {
-        latitude: GWANGHWAMUN_COORDS.lat,
-        longitude: GWANGHWAMUN_COORDS.lng,
-      };
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const location = await Location.getCurrentPositionAsync();
-          userCurrentLocation.current = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          };
-          coords = userCurrentLocation.current;
-        }
-      } catch (e) {
-        console.log('위치 가져오기 에러, 기본 위치(광화문)으로 설정합니다.', e);
+      // 기본디폴트 토론토 다운타운
+      let coords: LatLng = toLatLng(GWANGHWAMUN_COORDS);
+
+      const setRegion = (c: LatLng) =>
+        setInitialRegion({ ...c, latitudeDelta: 0.02, longitudeDelta: 0.01 });
+
+      // 브라우저 Geolocation 시도
+      const getBrowserGeo = (): Promise<LatLng | null> =>
+        new Promise((resolve) => {
+          if (!navigator.geolocation) return resolve(null);
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              resolve({
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+              });
+            },
+            async () => {
+              resolve(null);
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+          );
+        });
+
+      let current: LatLng | null = await getBrowserGeo();
+
+      // 실패 시 Google Geolocation API 폴백
+      if (!current) {
+        current = await googleGeolocate();
       }
-      setInitialRegion({ ...coords, latitudeDelta: 0.02, longitudeDelta: 0.01 });
+
+      if (current) {
+        userCurrentLocation.current = current;
+        const inCanada = await isInCanada(current);
+        coords = inCanada ? current : toLatLng(GWANGHWAMUN_COORDS);
+      } else {
+        // 전부 실패하면 토론토 다운타운
+        coords = toLatLng(GWANGHWAMUN_COORDS);
+      }
+
+      setRegion(coords);
     };
+
     initialize();
   }, []);
 
@@ -284,14 +356,15 @@ const SearchWeb: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={PURPLE_THEME.primary} />
-        <Text>지도 정보를 불러오는 중...</Text>
+        <Text>Getting map information...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <APIProvider apiKey={Maps_API_KEY}>
+      {/* places/지오코딩 사용하므로 라이브러리 로드 */}
+      <APIProvider apiKey={Maps_API_KEY} libraries={['places']}>
         <View style={styles.mapContainer}>
           <MapWithLogic
             initialRegion={initialRegion}
@@ -306,7 +379,7 @@ const SearchWeb: React.FC = () => {
 
       {/* 매장 목록 */}
       <View style={styles.listContainer}>
-        <Text style={styles.listTitle}>주변 통신사 매장</Text>
+        <Text style={styles.listTitle}>A nearby carrier store</Text>
         <FlatList
           data={stores}
           keyExtractor={(item) => item.id}

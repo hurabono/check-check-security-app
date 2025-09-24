@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -14,14 +14,14 @@ export const homeStyles = StyleSheet.create({
   },
   welcomeSection: {
     paddingHorizontal: 20,
-    paddingTop: 80,
+    paddingTop: 30,
     paddingBottom: 16,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
   },
   welcomeText: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "800",
     color: COLORS.text,
     letterSpacing: -0.5,
@@ -96,6 +96,18 @@ export const homeStyles = StyleSheet.create({
     color: COLORS.white,
     fontWeight: "600",
   },
+  basicText: {
+    color: COLORS.text,
+    fontSize:15,
+    fontWeight:500,
+    letterSpacing:2
+  },
+  subText:{
+    color: COLORS.textLight,
+    fontSize:12,
+    marginTop: 10,
+    letterSpacing:1
+  },
   titleSection: {
     paddingHorizontal: 16,
     marginTop: 8,
@@ -107,9 +119,12 @@ export const homeStyles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
     color: COLORS.text,
-    letterSpacing: -0.5,
+    letterSpacing: 2,
+    textAlign:"center",
+    textTransform:"uppercase"
   },
-  // ... (다른 스타일들은 그대로 유지) ...
+
+
   selectedCategoryText: {
     color: COLORS.white,
   },
@@ -122,7 +137,6 @@ export const homeStyles = StyleSheet.create({
     marginTop: 12,
   },
   
-  // ## 여기가 최종 수정된 부분입니다 ##
   menuCard: {
     width: "48%",
     height: 240,
@@ -130,9 +144,7 @@ export const homeStyles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 20,
     paddingHorizontal: 10,
-    // alignItems로 가로 중앙 정렬
     alignItems: "center",
-    // justifyContent로 세로 중앙 정렬 (flex-end에서 변경)
     justifyContent: "center", 
     marginBottom: 16,
     elevation: 4,
@@ -143,10 +155,10 @@ export const homeStyles = StyleSheet.create({
   },
   
   menuCardImage: {
-    width: 120, // 이미지 너비
-    height: 120, // 이미지 높이
+    width: 120, 
+    height: 120, 
     borderRadius: 12,
-    marginBottom: 16, // 이미지와 텍스트 사이 간격
+    marginBottom: 16,
   },
 
   menuCardText: {
@@ -160,11 +172,18 @@ export const homeStyles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     paddingVertical: 6,
     borderRadius: 12,
-    marginTop: 10,
-    width: 100,
-    height: 40,
+    width: 80,
+    height: 30,
     alignSelf: "flex-end",
     justifyContent: "center",
     alignItems: "center",
   },
+  LoginEmail: {
+    width: '100%',
+    marginTop:50,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  }
 });

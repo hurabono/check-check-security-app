@@ -1,57 +1,53 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, Linking, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../constants/colors'; // 기존 constants 파일 사용
+import { useRouter } from 'expo-router';
+import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../constants/colors';
 
-// --- 보안 이야기 데이터 ---
 
 const securityArticles = [
   {
     id: '1',
-    title: '피싱 사기, 아는 만큼 피할 수 있어요',
-    excerpt: '최근 유행하는 스미싱, 파밍 등 다양한 피싱 수법과 예방법을 알아봅니다.',
+    title: 'Phishing scams, you can avoid them as much as you know',
+    excerpt: 'We will find out various phishing methods and prevention methods such as smishing and farming that are popular recently.',
     imageUrl: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=800',
-    readTime: '5분',
+    readTime: '5min',
     articleUrl: 'https://privacy.naver.com/knowledge/phishing_prevention?menu=knowledge_info_classroom_phishing_prevention', 
   },
   {
     id: '2',
-    title: '강력한 비밀번호, 보안의 첫걸음',
-    excerpt: '쉽게 잊어버리지 않으면서도 해킹하기 어려운 비밀번호를 만드는 꿀팁을 소개합니다.',
+    title: 'A strong password, the first step in security',
+    excerpt: 'Here are some tips on creating passwords that are difficult to hack without easily forgetting.',
     imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=800',
-    readTime: '3분',
+    readTime: '3min',
     articleUrl: 'https://www.clien.net/service/board/lecture/17519488', 
   },
   {
     id: '3',
-    title: '공용 와이파이, 공짜 뒤에 숨은 위험',
-    excerpt: '카페나 지하철의 공용 와이파이를 안전하게 사용하는 방법을 알려드립니다.',
+    title: 'Public Wi-Fi, Dangers Behind Freebies',
+    excerpt: 'I will tell you how to use public Wi-Fi safely in cafes or subways.',
     imageUrl: 'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?q=80&w=800',
-    readTime: '4분',
+    readTime: '4min',
     articleUrl: 'https://blog.naver.com/haionnet486/223517323626', 
   },
 ];
 
 const ArticleScreen = () => {
   const router = useRouter();
-
-  // ## 수정된 부분 ##: 외부 링크를 여는 기능으로 변경
   const handleArticlePress = async (article) => {
     const supported = await Linking.canOpenURL(article.articleUrl);
 
     if (supported) {
       await Linking.openURL(article.articleUrl);
     } else {
-      Alert.alert("오류", `'${article.articleUrl}' 주소를 열 수 없습니다.`);
+      Alert.alert("Error", `'${article.articleUrl}' Unable to open address.`);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>보안에 관한 이야기</Text>
-        <Text style={styles.headerSubtitle}>최신 보안 트렌드와 유용한 팁을 확인해보세요.</Text>
+        <Text style={styles.headerTitle}>A story about security</Text>
+        <Text style={styles.headerSubtitle}>Check out the latest security trends and helpful tips.</Text>
       </View>
 
       <View style={styles.articleList}>
@@ -68,7 +64,7 @@ const ArticleScreen = () => {
               <Text style={styles.cardExcerpt}>{article.excerpt}</Text>
               <View style={styles.cardMeta}>
                 <Ionicons name="time-outline" size={16} color={COLORS.textLight} />
-                <Text style={styles.cardMetaText}>{article.readTime} 소요</Text>
+                <Text style={styles.cardMetaText}>{article.readTime} </Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -80,7 +76,6 @@ const ArticleScreen = () => {
 
 export default ArticleScreen;
 
-// --- 스타일 시트 ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -88,7 +83,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 80,
+    paddingTop: 50,
     paddingBottom: 24,
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,

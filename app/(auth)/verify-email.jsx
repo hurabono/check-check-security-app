@@ -1,17 +1,17 @@
 import { useSignUp } from "@clerk/clerk-expo";
+import { Image } from "expo-image";
 import { useState } from "react";
 import {
-  View,
-  Text,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { authStyles } from "../../assets/styles/auth.styles";
-import { Image } from "expo-image";
 import { COLORS } from "../../constants/colors";
 const VerifyEmail = ({ email, onBack }) => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -28,11 +28,11 @@ const VerifyEmail = ({ email, onBack }) => {
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
       } else {
-        Alert.alert("오류", "인증에 실패했습니다. 다시 시도해주세요.");
+        Alert.alert("ERROR", "VERIFY FAILED, PLEASE TRY AGAIN LATER.");
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      Alert.alert("오류", err.errors?.[0]?.message || "인증실패");
+      Alert.alert("ERROR", err.errors?.[0]?.message || "VERIFICATION FAILED");
       console.error(JSON.stringify(err, null, 2));
     } finally {
       setLoading(false);
@@ -60,8 +60,8 @@ const VerifyEmail = ({ email, onBack }) => {
           </View>
 
           {/* Title */}
-          <Text style={authStyles.title}>내 이메일 인증하기</Text>
-          <Text style={authStyles.subtitle}>이메일 코드를 보내드렸습니다! {email} 에서 확인해주세요</Text>
+          <Text style={authStyles.title}>MY EMAIL VERIFICATION</Text>
+          <Text style={authStyles.subtitle}>WE SENT CODE YOUR EMAIL {email}! PLEASE CHECK YOUR MAILBOX</Text>
 
           <View style={authStyles.formContainer}>
             {/* Verification Code Input */}
@@ -84,13 +84,13 @@ const VerifyEmail = ({ email, onBack }) => {
               disabled={loading}
               activeOpacity={0.8}
             >
-              <Text style={authStyles.buttonText}>{loading ? "확인중..." : "이메일 인증하기"}</Text>
+              <Text style={authStyles.buttonText}>{loading ? "VERIFYING..." : "VERIFY EMAIL"}</Text>
             </TouchableOpacity>
 
             {/* Back to Sign Up */}
             <TouchableOpacity style={authStyles.linkContainer} onPress={onBack}>
               <Text style={authStyles.linkText}>
-                <Text style={authStyles.link}>회원가입 화면으로 돌아가기</Text>
+                <Text style={authStyles.link}> GO BACK TO LOGIN PAGE</Text>
               </Text>
             </TouchableOpacity>
           </View>
