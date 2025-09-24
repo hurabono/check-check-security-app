@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "start:web": "cross-env EXPO_WEB=true expo start --web",
     "lint": "expo lint",
+    "build": "next build",
     "web-build": "expo export:web"
   },
   "dependencies": {
