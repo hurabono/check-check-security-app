@@ -1,14 +1,13 @@
 "use client";
 import { useAuth } from "@clerk/clerk-expo";
-import { Redirect } from "expo-router";
+import { Redirect, type Href } from "expo-router";
 
 export default function HomePage() {
   const { isSignedIn, isLoaded } = useAuth();
   if (!isLoaded) return null;
 
-  return (
-    <Redirect
-      href={isSignedIn ? "/(tabs)" : "/(auth)/sign-in"}
-    />
-  );
+  const authed = "/(tabs)" as Href;          
+  const signIn = "/(auth)/sign-in" as Href;
+
+  return <Redirect href={isSignedIn ? authed : signIn} />;
 }
