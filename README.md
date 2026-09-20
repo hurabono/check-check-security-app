@@ -1,4 +1,5 @@
 # CheckCheck Security App
+![Thumnail](https://ik.imagekit.io/stephanie/git-thum/security.png?updatedAt=1786472617335)
 
 A mobile security check for people who would never run one.
 
@@ -7,8 +8,10 @@ Most people never audit their own phone or network. Not because they do not care
 > **Merit Award, Sungshin Women's University AI Polytechnic Competition (2025)**
 > Recognized for creativity and technical implementation in improving digital security awareness.
 
+<img width="300" height="583" alt="checkcheck-demo" src="https://github.com/user-attachments/assets/29d9fbf3-ca47-40e8-bf6c-a3bff2e0ca01" />
 
-![Watch the demo](https://ik.imagekit.io/stephanie/git-thum/security.png?updatedAt=1786472617335)
+
+*Full walkthrough, sped up: security survey, device scan, phishing analysis, and the carrier store map.*
 
 ## What it does
 
