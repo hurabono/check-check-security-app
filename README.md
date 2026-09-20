@@ -71,9 +71,7 @@ npx expo start        # native, open in Expo Go
 npm run dev           # web
 ```
 
-Scan the QR code with Expo Go to run it on a real device, which is the only way the device checks return anything meaningful.
 
-![Expo QR Code](https://github.com/hurabono/check-check-security-app/blob/main/Screenshot%202025-08-11%20232811.png?raw=true)
 
 ## What I took from it
 
