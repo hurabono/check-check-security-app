@@ -5,9 +5,6 @@ A mobile security check for people who would never run one.
 
 Most people never audit their own phone or network. Not because they do not care, but because the tools assume you already speak the language: open a terminal, read a CVE, interpret a port scan. CheckCheck runs the check for them and answers in plain sentences.
 
-> **Merit Award, Sungshin Women's University AI Polytechnic Competition (2025)**
-> Recognized for creativity and technical implementation in improving digital security awareness.
-
 <img width="300" height="583" alt="checkcheck-demo" src="https://github.com/user-attachments/assets/29d9fbf3-ca47-40e8-bf6c-a3bff2e0ca01" />
 
 
